@@ -1,0 +1,6 @@
+{
+    "name": "loom",
+    "tree": {
+        "$path": "lib"
+    }
+}

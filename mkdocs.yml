@@ -1,0 +1,37 @@
+site_name: Loom Documentation
+site_url: https://wireofparadise.github.io/loom/
+
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+
+    - scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - content.action.edit
+
+repo_url: https://github.com/wireofparadise/loom
+repo_name: loom
+edit_uri: edit/main/docs/
+
+nav:
+  - Introduction: index.md
+  - Tutorials:
+    - Installation: tutorials/installation.md
+    - Getting started: tutorials/getting-started.md
+
+extra:
+  version:
+    provider: mike
+
+markdown_extensions:
+  - toc:
+      permalink: true

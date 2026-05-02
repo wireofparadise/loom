@@ -1,0 +1,47 @@
+[package]
+name = "wireofparadise/loom"
+description = "Lifecycle management framework for Roblox."
+version = "1.0.0"
+license = "MIT"
+authors = ["wireofparadise <wireofparadise@gmail.com>"]
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+homepage = "https://wireofparadise.github.io/loom/"
+repository = "https://github.com/wireofparadise/loom"
+exclude = [
+    # macOS finder meta
+    ".DS_Store",
+
+    # Git
+    ".git/",
+    ".gitignore",
+    ".github/",
+
+    # Visual Studio Code settings
+    ".vscode/",
+
+    # Documentation
+    "docs/",
+    "CONTRIBUTING.md",
+    "mkdocs.yml",
+    "requirements.txt",
+
+    # Language server configuration
+    ".luaurc",
+
+    # Toolchain
+    "rokit.toml",
+    "selene.toml",
+    "sourcemap.json",
+
+    # Rojo builds
+    "*.rbxl",
+    "*.rbxlx",
+    "*.rbxl.lock",
+    "*.rbxlx.lock",
+    "*.rbxm",
+    "*.rbxmx",
+
+    # Packages
+    "*.tgz",
+]
