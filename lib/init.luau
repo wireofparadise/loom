@@ -75,4 +75,8 @@ function Loom.Terminate()
 	end
 end
 
+function Loom.IsRunning()
+	return isRunning
+end
+
 return Loom
