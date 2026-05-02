@@ -81,7 +81,11 @@ function Service.Trigger(service: any, trigger: Trigger, ...: any)
 		return
 	end
 
-	service[trigger](...)
+	local handler = service[trigger]
+
+	if handler then
+		handler(...)
+	end
 end
 
 function Service.IsStarted(service: any): boolean
