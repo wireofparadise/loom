@@ -10,6 +10,8 @@ export type Trigger = typeof(Service.Init) | typeof(Service.Start) | typeof(Serv
 export type EventHandler = (...any) -> () | any
 
 local SERVICE_TAG = "__loom_isService"
+local IS_INITIALIZED_TAG = "__loom_isInitialized"
+local IS_STARTED_TAG = "__loom_isStarted"
 
 function Service.Create(table: any)
 	if typeof(table) ~= "table" then
@@ -26,50 +28,47 @@ function Service.On(service: any, trigger: Trigger, func: EventHandler)
 		return
 	end
 
-	local isInitialized = false
-	local isStarted = false
-
 	if trigger == Service.Init then
 		service[trigger] = function(...: any)
-			if isInitialized then
+			if service[IS_INITIALIZED_TAG] then
 				Log.Warn("failed to initialize service: already initialized")
 				return
 			end
 
 			local result = (func :: any)(...)
 
-			isInitialized = true
+			service[IS_INITIALIZED_TAG] = true
 
 			return result
 		end
 	elseif trigger == Service.Start then
 		service[trigger] = function(...: any)
-			if not isInitialized then
+			if not service[IS_INITIALIZED_TAG] then
 				Log.Warn("failed to start service: not initialized")
 				return
 			end
 
-			if isStarted then
+			if service[IS_STARTED_TAG] then
 				Log.Warn("failed to start service: already started")
 				return
 			end
 
 			local result = (func :: any)(...)
 
-			isStarted = true
+			service[IS_STARTED_TAG] = true
 
 			return result
 		end
 	elseif trigger == Service.Stop then
 		service[trigger] = function(...: any)
-			if not isStarted then
+			if not service[IS_STARTED_TAG] then
 				Log.Warn("failed to stop service: not started")
 				return
 			end
 
 			local result = (func :: any)(...)
 
-			isStarted = false
+			service[IS_STARTED_TAG] = false
 
 			return result
 		end
