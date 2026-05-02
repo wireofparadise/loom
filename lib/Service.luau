@@ -28,57 +28,41 @@ function Service.On(service: any, trigger: Trigger, func: EventHandler)
 		return
 	end
 
-	if trigger == Service.Init then
-		service[trigger] = function(...: any)
-			if service[IS_INITIALIZED_TAG] then
-				Log.Warn("failed to initialize service: already initialized")
-				return
-			end
-
-			local result = (func :: any)(...)
-
-			service[IS_INITIALIZED_TAG] = true
-
-			return result
-		end
-	elseif trigger == Service.Start then
-		service[trigger] = function(...: any)
-			if not service[IS_INITIALIZED_TAG] then
-				Log.Warn("failed to start service: not initialized")
-				return
-			end
-
-			if service[IS_STARTED_TAG] then
-				Log.Warn("failed to start service: already started")
-				return
-			end
-
-			local result = (func :: any)(...)
-
-			service[IS_STARTED_TAG] = true
-
-			return result
-		end
-	elseif trigger == Service.Stop then
-		service[trigger] = function(...: any)
-			if not service[IS_STARTED_TAG] then
-				Log.Warn("failed to stop service: not started")
-				return
-			end
-
-			local result = (func :: any)(...)
-
-			service[IS_STARTED_TAG] = false
-
-			return result
-		end
-	end
+	service[trigger] = func
 end
 
 function Service.Trigger(service: any, trigger: Trigger, ...: any)
 	if not Service.IsService(service) then
 		Log.Warn("failed to trigger service event: given object is not a valid service")
 		return
+	end
+
+	if trigger == Service.Init then
+		if service[IS_INITIALIZED_TAG] then
+			Log.Warn("failed to initialize service: already initialized")
+			return
+		end
+
+		service[IS_INITIALIZED_TAG] = true
+	elseif trigger == Service.Start then
+		if not service[IS_INITIALIZED_TAG] then
+			Log.Warn("failed to start service: not initialized")
+			return
+		end
+
+		if service[IS_STARTED_TAG] then
+			Log.Warn("failed to start service: already started")
+			return
+		end
+
+		service[IS_STARTED_TAG] = true
+	elseif trigger == Service.Stop then
+		if not service[IS_STARTED_TAG] then
+			Log.Warn("failed to stop service: not started")
+			return
+		end
+
+		service[IS_STARTED_TAG] = false
 	end
 
 	local handler = service[trigger]
