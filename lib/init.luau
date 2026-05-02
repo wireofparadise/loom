@@ -22,7 +22,7 @@ function Loom.AddSource(source: Instance)
 	if source:IsA("ModuleScript") then
 		local module = UseRequire(source)
 
-		if Service.IsService(module) then
+		if not Service.IsService(module) then
 			Log.Warn("failed to add source: module is not a valid loom service, did you forget `Loom.CreateService()`?")
 			return
 		end
