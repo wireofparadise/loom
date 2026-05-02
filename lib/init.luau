@@ -65,6 +65,8 @@ function Loom.Run()
 		return
 	end
 
+	isRunning = true
+
 	for _, service in ipairs(services) do
 		Service.Trigger(service, Service.Init)
 	end
@@ -79,6 +81,8 @@ function Loom.Terminate()
 		Log.Warn("failed to terminate loom: loom is not running")
 		return
 	end
+
+	isRunning = false
 
 	for _, service in ipairs(services) do
 		Service.Trigger(service, Service.Stop)
