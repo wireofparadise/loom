@@ -77,7 +77,7 @@ function Service.On(service: any, trigger: Trigger, func: EventHandler)
 end
 
 function Service.Trigger(service: any, trigger: Trigger, ...: any)
-	if Service.IsService(service) then
+	if not Service.IsService(service) then
 		Log.Warn("failed to trigger service event: given object is not a valid service")
 		return
 	end
