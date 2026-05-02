@@ -2,6 +2,9 @@ local Log = require(script.Log)
 local Service = require(script.Service)
 local UseRequire = require(script.UseRequire)
 
+local services: { { any } } = {}
+local isRunning = false
+
 local Loom = {}
 
 Loom.Init = Service.Init
@@ -9,16 +12,29 @@ Loom.Start = Service.Start
 Loom.Stop = Service.Stop
 
 function Loom.CreateService(table: any)
+	if isRunning then
+		Log.Warn("failed to create service: loom is already running")
+		return
+	end
+
 	Service.Create(table)
 end
 
 function Loom.On(table: any, trigger: Service.Trigger, func: Service.EventHandler)
+	if isRunning then
+		Log.Warn("failed to add service event: loom is already running")
+		return
+	end
+
 	Service.On(table, trigger, func)
 end
 
-local services: { { any } } = {}
-
 function Loom.AddSource(source: Instance)
+	if isRunning then
+		Log.Warn("failed to add source: loom is already running")
+		return
+	end
+
 	if source:IsA("ModuleScript") then
 		local module = UseRequire(source)
 
@@ -38,12 +54,22 @@ function Loom.AddSource(source: Instance)
 end
 
 function Loom.Run()
+	if isRunning then
+		Log.Warn("failed to run loom: loom is already running")
+		return
+	end
+
 	for _, service in ipairs(services) do
 		Service.Trigger(service, Service.Start)
 	end
 end
 
 function Loom.Terminate()
+	if not isRunning then
+		Log.Warn("failed to terminate loom: loom is not running")
+		return
+	end
+
 	for _, service in ipairs(services) do
 		Service.Trigger(service, Service.Stop)
 	end
