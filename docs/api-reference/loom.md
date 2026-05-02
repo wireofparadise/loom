@@ -2,16 +2,16 @@
 
 ## `AddSource()`
 
-## `Start()`
+## `Run()`
 
-## `Stop()`
+## `Terminate()`
 
-## `IsStarted()`
+## `IsRunning()`
 
 ## `CreateService()`
 
-## `InitService()`
+## `On()`
 
-## `StartService()`
+## `IsServiceInitialized()`
 
-## `StopService()`
+## `IsServiceStarted()`

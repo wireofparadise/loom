@@ -1,40 +1,111 @@
 local Log = require(script.Parent.Log)
-local Types = require(script.Parent.Types)
 
-local Service = {} :: Types.ServiceClass
-Service.__index = Service
+local Service = {}
 
-function Service.new(): Types.Service
-	local self = setmetatable({}, Service)
+Service.Init = "__loom_lifecycle_init"
+Service.Start = "__loom_lifecycle_start"
+Service.Stop = "__loom_lifecycle_stop"
 
-	self.__isInitialized = false
-	self.__isStarted = false
-	self.__methodRegistry = {}
+export type Trigger = typeof(Service.Init) | typeof(Service.Start) | typeof(Service.Stop)
+export type EventHandler = (...any) -> () | any
 
-	return self :: any
-end
+local SERVICE_TAG = "__loom_isService"
+local IS_INITIALIZED_TAG = "__loom_isInitialized"
+local IS_STARTED_TAG = "__loom_isStarted"
 
-function Service:AddMethod(name: string, func: (...any) -> any)
-	if self[name] then
-		Log.Warn(string.format("failed to add service method %s: already exists", name))
+function Service.Create(table: any)
+	if typeof(table) ~= "table" then
+		Log.Warn("failed to register service: given object is not a valid service")
 		return
 	end
 
-	self[name] = function(self: Types.Service, ...: any)
-		if not self.__isStarted then
-			Log.Error(string.format("cannot call service function %s: service is not started", name))
-		end
-
-		return func(self, ...)
-	end
-
-	table.insert(self.__methodRegistry, name)
+	table[SERVICE_TAG] = true
 end
 
-function Service:OnInit() end
+function Service.On(service: any, trigger: Trigger, func: EventHandler)
+	if not Service.IsService(service) then
+		Log.Warn("cannot annotate object because it's not a valid loom service")
+		return
+	end
 
-function Service:OnStart() end
+	if trigger == Service.Init then
+		service[trigger] = function(...: any)
+			if service[IS_INITIALIZED_TAG] then
+				Log.Warn("failed to initialize service: already initialized")
+				return
+			end
 
-function Service:OnStop() end
+			local result = (func :: any)(...)
+
+			service[IS_INITIALIZED_TAG] = true
+
+			return result
+		end
+	elseif trigger == Service.Start then
+		service[trigger] = function(...: any)
+			if not service[IS_INITIALIZED_TAG] then
+				Log.Warn("failed to start service: not initialized")
+				return
+			end
+
+			if service[IS_STARTED_TAG] then
+				Log.Warn("failed to start service: already started")
+				return
+			end
+
+			local result = (func :: any)(...)
+
+			service[IS_STARTED_TAG] = true
+
+			return result
+		end
+	elseif trigger == Service.Stop then
+		service[trigger] = function(...: any)
+			if not service[IS_STARTED_TAG] then
+				Log.Warn("failed to stop service: not started")
+				return
+			end
+
+			local result = (func :: any)(...)
+
+			service[IS_STARTED_TAG] = false
+
+			return result
+		end
+	end
+end
+
+function Service.Trigger(service: any, trigger: Trigger, ...: any)
+	if not Service.IsService(service) then
+		Log.Warn("failed to trigger service event: given object is not a valid service")
+		return
+	end
+
+	local handler = service[trigger]
+
+	if handler then
+		handler(...)
+	end
+end
+
+function Service.IsStarted(service: any): boolean
+	if not Service.IsService(service) then
+		return false
+	end
+
+	return service[IS_STARTED_TAG]
+end
+
+function Service.IsInitialized(service: any): boolean
+	if not Service.IsService(service) then
+		return false
+	end
+
+	return service[IS_INITIALIZED_TAG]
+end
+
+function Service.IsService(table: any): boolean
+	return typeof(table) == "table" and table[SERVICE_TAG] == true
+end
 
 return Service

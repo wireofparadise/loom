@@ -1,7 +1,7 @@
 [package]
 name = "wireofparadise/loom"
 description = "Lifecycle management framework for Roblox."
-version = "1.0.0"
+version = "1.1.0"
 license = "MIT"
 authors = ["wireofparadise <wireofparadise@gmail.com>"]
 registry = "https://github.com/UpliftGames/wally-index"
@@ -13,15 +13,15 @@ exclude = [
     ".DS_Store",
 
     # Git
-    ".git/",
+    ".git",
     ".gitignore",
-    ".github/",
+    ".github",
 
     # Visual Studio Code settings
-    ".vscode/",
+    ".vscode",
 
     # Documentation
-    "docs/",
+    "docs",
     "CONTRIBUTING.md",
     "mkdocs.yml",
     "requirements.txt",

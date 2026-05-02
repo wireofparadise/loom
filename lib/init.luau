@@ -1,118 +1,92 @@
 local Log = require(script.Log)
 local Service = require(script.Service)
-local Types = require(script.Types)
 local UseRequire = require(script.UseRequire)
-local IsLoomService = require(script.IsLoomService)
+
+local services: { { any } } = {}
+local isRunning = false
 
 local Loom = {}
 
-local isStarted = false
-local loadedModules: { ModuleScript } = {}
-local loadedServices: { Service } = {}
+Loom.Init = Service.Init
+Loom.Start = Service.Start
+Loom.Stop = Service.Stop
 
-export type Service = Types.Service
+function Loom.CreateService(table: any)
+	if isRunning then
+		Log.Warn("failed to create service: loom is already running")
+		return
+	end
+
+	Service.Create(table)
+end
+
+function Loom.IsServiceInitialized(service: any)
+	return Service.IsInitialized(service)
+end
+
+function Loom.IsServiceStarted(service: any)
+	return Service.IsStarted(service)
+end
+
+function Loom.On(table: any, trigger: Service.Trigger, func: Service.EventHandler)
+	if isRunning then
+		Log.Warn("failed to add service event: loom is already running")
+		return
+	end
+
+	Service.On(table, trigger, func)
+end
 
 function Loom.AddSource(source: Instance)
-	if isStarted then
-		Log.Warn("failed to add source: loom has already been started")
+	if isRunning then
+		Log.Warn("failed to add source: loom is already running")
 		return
 	end
 
 	if source:IsA("ModuleScript") then
-		table.insert(loadedModules, source)
-		return
+		local module = UseRequire(source)
+
+		if not Service.IsService(module) then
+			Log.Warn("failed to add source: module is not a valid loom service, did you forget `Loom.CreateService()`?")
+			return
+		end
+
+		table.insert(services, module)
 	end
 
-	for _, child in pairs(source:GetChildren()) do
+	for _, child in ipairs(source:GetChildren()) do
 		Loom.AddSource(child)
 	end
 end
 
-function Loom.Start()
-	if isStarted then
-		Log.Warn("failed to start loom: loom has already been started")
+function Loom.Run()
+	if isRunning then
+		Log.Warn("failed to run loom: loom is already running")
 		return
 	end
 
-	isStarted = true
-
-	for i, module in ipairs(loadedModules) do
-		local service: Service = UseRequire(module)
-
-		if not IsLoomService(service) then
-			Log.Warn(string.format("skipping module %s: invalid loom service", module.Name))
-			continue
-		end
-
-		table.insert(loadedServices, service)
-		loadedModules[i] = nil
-
-		if not service.__isInitialized then
-			Loom.InitService(service)
-		end
+	for _, service in ipairs(services) do
+		Service.Trigger(service, Service.Init)
 	end
 
-	for _, service in ipairs(loadedServices) do
-		if not service.__isStarted then
-			Loom.StartService(service)
-		end
+	for _, service in ipairs(services) do
+		Service.Trigger(service, Service.Start)
 	end
 end
 
-function Loom.Stop()
-	if not isStarted then
-		Log.Warn("failed to stop loom: loom has already been stopped")
+function Loom.Terminate()
+	if not isRunning then
+		Log.Warn("failed to terminate loom: loom is not running")
 		return
 	end
 
-	for _, service in ipairs(loadedServices) do
-		if service.__isStarted then
-			Loom.StopService(service)
-		end
+	for _, service in ipairs(services) do
+		Service.Trigger(service, Service.Stop)
 	end
 end
 
-function Loom.IsStarted(): boolean
-	return isStarted
-end
-
-function Loom.CreateService()
-	return Service.new()
-end
-
-function Loom.InitService(service: Service)
-	if service.__isInitialized then
-		Log.Warn("failed to initialize service: service has already been initialized")
-		return
-	end
-
-	service:OnInit()
-	service.__isInitialized = true
-end
-
-function Loom.StartService(service: Service)
-	if not service.__isInitialized then
-		Log.Warn("failed to start service: service is not initialized")
-		return
-	end
-
-	if service.__isStarted then
-		Log.Warn("failed to start service: service has already been started")
-		return
-	end
-
-	service:OnStart()
-	service.__isStarted = true
-end
-
-function Loom.StopService(service: Service)
-	if not service.__isStarted then
-		Log.Warn("failed to stop service: service is not running")
-		return
-	end
-
-	service:OnStop()
-	service.__isStarted = false
+function Loom.IsRunning()
+	return isRunning
 end
 
 return Loom
