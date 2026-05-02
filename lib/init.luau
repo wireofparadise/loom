@@ -20,6 +20,14 @@ function Loom.CreateService(table: any)
 	Service.Create(table)
 end
 
+function Loom.IsServiceInitialized(service: any)
+	return Service.IsInitialized(service)
+end
+
+function Loom.IsServiceStarted(service: any)
+	return Service.IsStarted(service)
+end
+
 function Loom.On(table: any, trigger: Service.Trigger, func: Service.EventHandler)
 	if isRunning then
 		Log.Warn("failed to add service event: loom is already running")

@@ -84,6 +84,22 @@ function Service.Trigger(service: any, trigger: Trigger, ...: any)
 	service[trigger](...)
 end
 
+function Service.IsStarted(service: any): boolean
+	if not Service.IsService(service) then
+		return false
+	end
+
+	return service[IS_STARTED_TAG]
+end
+
+function Service.IsInitialized(service: any): boolean
+	if not Service.IsService(service) then
+		return false
+	end
+
+	return service[IS_INITIALIZED_TAG]
+end
+
 function Service.IsService(table: any): boolean
 	return typeof(table) == "table" and table[SERVICE_TAG] == true
 end
