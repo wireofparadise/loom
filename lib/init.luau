@@ -52,8 +52,6 @@ function Loom.AddSource(source: Instance)
 		end
 
 		table.insert(services, module)
-
-		Service.Trigger(module, Service.Init)
 	end
 
 	for _, child in ipairs(source:GetChildren()) do
@@ -65,6 +63,10 @@ function Loom.Run()
 	if isRunning then
 		Log.Warn("failed to run loom: loom is already running")
 		return
+	end
+
+	for _, service in ipairs(services) do
+		Service.Trigger(service, Service.Init)
 	end
 
 	for _, service in ipairs(services) do
