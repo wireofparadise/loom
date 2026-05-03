@@ -4,7 +4,7 @@
     Add the following line to your `wally.toml`:
 
     ```toml
-    Loom = "wireofparadise/loom@1.1.2"
+    Loom = "wireofparadise/loom@1.2.0"
     ```
 
     And then reinstall your packages, using the following command:
