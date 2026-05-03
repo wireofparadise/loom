@@ -1,6 +1,6 @@
 # loom
 
-Lifecycle management framework for Roblox.
+Game development framework for Roblox.
 
 ## Documentation
 

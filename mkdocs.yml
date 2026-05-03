@@ -27,8 +27,6 @@ nav:
   - Tutorials:
     - Installation: tutorials/installation.md
     - Getting started: tutorials/getting-started.md
-  - API Reference:
-    - Loom: api-reference/loom.md
 
 extra:
   version:
