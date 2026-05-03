@@ -37,7 +37,7 @@ function Loom.OnStart(table: ServiceTable, func: Service.EventHandler)
 end
 
 function Loom.OnStop(table: ServiceTable, func: Service.EventHandler)
-	connectLifecycleTrigger(table, Service.Start, func)
+	connectLifecycleTrigger(table, Service.Stop, func)
 end
 
 function Loom.AddSource(source: Instance)
