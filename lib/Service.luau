@@ -6,6 +6,7 @@ Service.Init = "__loom_lifecycle_init"
 Service.Start = "__loom_lifecycle_start"
 Service.Stop = "__loom_lifecycle_stop"
 
+export type Table = { [any]: any }
 export type Trigger = typeof(Service.Init) | typeof(Service.Start) | typeof(Service.Stop)
 export type EventHandler = (...any) -> () | any
 
@@ -13,7 +14,7 @@ local SERVICE_TAG = "__loom_isService"
 local IS_INITIALIZED_TAG = "__loom_isInitialized"
 local IS_STARTED_TAG = "__loom_isStarted"
 
-function Service.Create(table: any)
+function Service.Create(table: Table)
 	if typeof(table) ~= "table" then
 		Log.Warn("failed to register service: given object is not a valid service")
 		return
@@ -22,7 +23,7 @@ function Service.Create(table: any)
 	table[SERVICE_TAG] = true
 end
 
-function Service.On(service: any, trigger: Trigger, func: EventHandler)
+function Service.On(service: Table, trigger: Trigger, func: EventHandler)
 	if not Service.IsService(service) then
 		Log.Warn("cannot annotate object because it's not a valid loom service")
 		return
@@ -31,7 +32,7 @@ function Service.On(service: any, trigger: Trigger, func: EventHandler)
 	service[trigger] = func
 end
 
-function Service.Trigger(service: any, trigger: Trigger, ...: any)
+function Service.Trigger(service: Table, trigger: Trigger, ...: any)
 	if not Service.IsService(service) then
 		Log.Warn("failed to trigger service event: given object is not a valid service")
 		return
@@ -72,7 +73,7 @@ function Service.Trigger(service: any, trigger: Trigger, ...: any)
 	end
 end
 
-function Service.IsStarted(service: any): boolean
+function Service.IsStarted(service: Table): boolean
 	if not Service.IsService(service) then
 		return false
 	end
@@ -80,7 +81,7 @@ function Service.IsStarted(service: any): boolean
 	return service[IS_STARTED_TAG]
 end
 
-function Service.IsInitialized(service: any): boolean
+function Service.IsInitialized(service: Table): boolean
 	if not Service.IsService(service) then
 		return false
 	end
@@ -88,7 +89,7 @@ function Service.IsInitialized(service: any): boolean
 	return service[IS_INITIALIZED_TAG]
 end
 
-function Service.IsService(table: any): boolean
+function Service.IsService(table: Table): boolean
 	return typeof(table) == "table" and table[SERVICE_TAG] == true
 end
 

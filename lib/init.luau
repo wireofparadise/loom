@@ -7,6 +7,10 @@ local isRunning = false
 
 local Loom = {}
 
+export type ServiceTable = Service.Table
+export type Trigger = Service.Trigger
+export type EventHandler = Service.EventHandler
+
 --- `Loom.Init` trigger is going to be removed in version 1.2 and upwards.
 Loom.Init = Service.Init
 
@@ -16,7 +20,7 @@ Loom.Start = Service.Start
 --- `Loom.Stop` is going to be removed alongside `Loom.On()` in version 1.2 and upwards. Use `Loom.OnStop()` instead
 Loom.Stop = Service.Stop
 
-function Loom.CreateService(table: any)
+function Loom.CreateService(table: ServiceTable)
 	if isRunning then
 		Log.Warn("failed to create service: loom is already running")
 		return
@@ -25,15 +29,15 @@ function Loom.CreateService(table: any)
 	Service.Create(table)
 end
 
-function Loom.IsServiceInitialized(service: any)
+function Loom.IsServiceInitialized(service: ServiceTable)
 	return Service.IsInitialized(service)
 end
 
-function Loom.IsServiceStarted(service: any)
+function Loom.IsServiceStarted(service: ServiceTable)
 	return Service.IsStarted(service)
 end
 
-local function connectLifecycleTrigger(table: any, trigger: Service.Trigger, func: Service.EventHandler)
+local function connectLifecycleTrigger(table: ServiceTable, trigger: Service.Trigger, func: Service.EventHandler)
 	if isRunning then
 		Log.Warn("failed to add service event: loom is already running")
 		return
@@ -49,15 +53,15 @@ end
 ---
 --- `Loom.Init` is deprecated and can no longer be used in version 1.2 and upwards.
 @deprecated
-function Loom.On(table: any, trigger: Service.Trigger, func: Service.EventHandler)
+function Loom.On(table: ServiceTable, trigger: Service.Trigger, func: Service.EventHandler)
 	connectLifecycleTrigger(table, trigger, func)
 end
 
-function Loom.OnStart(table: any, func: Service.EventHandler)
+function Loom.OnStart(table: ServiceTable, func: Service.EventHandler)
 	connectLifecycleTrigger(table, Service.Start, func)
 end
 
-function Loom.OnStop(table: any, func: Service.EventHandler)
+function Loom.OnStop(table: ServiceTable, func: Service.EventHandler)
 	connectLifecycleTrigger(table, Service.Start, func)
 end
 
