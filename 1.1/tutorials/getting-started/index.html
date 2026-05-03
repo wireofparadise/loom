@@ -521,7 +521,7 @@
   <span class="md-ellipsis">
     
   
-    API reference
+    API Reference
   
 
     
@@ -537,7 +537,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    API reference
+    API Reference
   
 
           </label>
@@ -558,34 +558,6 @@
     
   
     Loom
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api-reference/service.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Service
   
 
     
@@ -780,15 +752,11 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="4:1"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Luau</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="nv">Loom</span><span class="p">.</span><span class="nf">On</span><span class="p">(</span><span class="nv">PlayerLogService</span><span class="p">,</span><span class="w"> </span><span class="nv">Loom</span><span class="p">.</span><span class="nv">Init</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span>
-<span class="w">    </span><span class="nf">print</span><span class="p">(</span><span class="s2">&quot;PlayerLogService has initialized!&quot;</span><span class="p">)</span>
-<span class="kr">end</span><span class="p">)</span>
-
-<span class="nv">Loom</span><span class="p">.</span><span class="nf">On</span><span class="p">(</span><span class="nv">PlayerLogService</span><span class="p">,</span><span class="w"> </span><span class="nv">Loom</span><span class="p">.</span><span class="nv">Start</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><span class="nv">Loom</span><span class="p">.</span><span class="nf">OnStart</span><span class="p">(</span><span class="nv">PlayerLogService</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span>
 <span class="w">    </span><span class="nf">print</span><span class="p">(</span><span class="s2">&quot;PlayerLogService has started!&quot;</span><span class="p">)</span>
 <span class="kr">end</span><span class="p">)</span>
 
-<span class="nv">Loom</span><span class="p">.</span><span class="nf">On</span><span class="p">(</span><span class="nv">PlayerLogService</span><span class="p">,</span><span class="w"> </span><span class="nv">Loom</span><span class="p">.</span><span class="nv">Stop</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span>
+<span class="nv">Loom</span><span class="p">.</span><span class="nf">OnStop</span><span class="p">(</span><span class="nv">PlayerLogService</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span>
 <span class="w">    </span><span class="nf">print</span><span class="p">(</span><span class="s2">&quot;PlayerLogService has stopped!&quot;</span><span class="p">)</span>
 <span class="kr">end</span><span class="p">)</span>
 </code></pre></div>
@@ -807,18 +775,14 @@
 
 <span class="c1">-- ...</span>
 
-<span class="nv">Loom</span><span class="p">.</span><span class="nf">On</span><span class="p">(</span><span class="nv">PlayerLogService</span><span class="p">,</span><span class="w"> </span><span class="nv">Loom</span><span class="p">.</span><span class="nv">Init</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span>
-<span class="w">    </span><span class="nf">print</span><span class="p">(</span><span class="s2">&quot;PlayerLogService has initialized!&quot;</span><span class="p">)</span>
-<span class="kr">end</span><span class="p">)</span>
-
-<span class="nv">Loom</span><span class="p">.</span><span class="nf">On</span><span class="p">(</span><span class="nv">PlayerLogService</span><span class="p">,</span><span class="w"> </span><span class="nv">Loom</span><span class="p">.</span><span class="nv">Start</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span>
+<span class="nv">Loom</span><span class="p">.</span><span class="nf">OnStart</span><span class="p">(</span><span class="nv">PlayerLogService</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span>
 <span class="w">    </span><span class="nv">PlayerLogService</span><span class="p">.</span><span class="nv">PlayerAdded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">Players</span><span class="p">.</span><span class="nv">PlayerAdded</span><span class="p">:</span><span class="nc">Connect</span><span class="p">(</span><span class="nv">PlayerLogService</span><span class="p">.</span><span class="nv">LogPlayerAdded</span><span class="p">)</span>
 <span class="w">    </span><span class="nv">PlayerLogService</span><span class="p">.</span><span class="nv">PlayerRemoving</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">Players</span><span class="p">.</span><span class="nv">PlayerRemoving</span><span class="p">:</span><span class="nc">Connect</span><span class="p">(</span><span class="nv">PlayerLogService</span><span class="p">.</span><span class="nv">LogPlayerRemoving</span><span class="p">)</span>
 
 <span class="w">    </span><span class="nf">print</span><span class="p">(</span><span class="s2">&quot;PlayerLogService has started!&quot;</span><span class="p">)</span>
 <span class="kr">end</span><span class="p">)</span>
 
-<span class="nv">Loom</span><span class="p">.</span><span class="nf">On</span><span class="p">(</span><span class="nv">PlayerLogService</span><span class="p">,</span><span class="w"> </span><span class="nv">Loom</span><span class="p">.</span><span class="nv">Stop</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span>
+<span class="nv">Loom</span><span class="p">.</span><span class="nf">OnStop</span><span class="p">(</span><span class="nv">PlayerLogService</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">()</span>
 <span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="nv">PlayerLogService</span><span class="p">.</span><span class="nv">PlayerAdded</span><span class="w"> </span><span class="kr">then</span>
 <span class="w">        </span><span class="nv">PlayerLogService</span><span class="p">.</span><span class="nv">PlayerAdded</span><span class="p">:</span><span class="nc">Disconnect</span><span class="p">()</span>
 <span class="w">    </span><span class="kr">end</span>
