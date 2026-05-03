@@ -2,16 +2,14 @@ local Log = require(script.Parent.Log)
 
 local Service = {}
 
-Service.Init = "__loom_lifecycle_init"
 Service.Start = "__loom_lifecycle_start"
 Service.Stop = "__loom_lifecycle_stop"
 
 export type Table = { [any]: any }
-export type Trigger = typeof(Service.Init) | typeof(Service.Start) | typeof(Service.Stop)
+export type Trigger = typeof(Service.Start) | typeof(Service.Stop)
 export type EventHandler = (...any) -> () | any
 
 local SERVICE_TAG = "__loom_isService"
-local IS_INITIALIZED_TAG = "__loom_isInitialized"
 local IS_STARTED_TAG = "__loom_isStarted"
 
 function Service.Create(table: Table)
@@ -38,19 +36,7 @@ function Service.Trigger(service: Table, trigger: Trigger, ...: any)
 		return
 	end
 
-	if trigger == Service.Init then
-		if service[IS_INITIALIZED_TAG] then
-			Log.Warn("failed to initialize service: already initialized")
-			return
-		end
-
-		service[IS_INITIALIZED_TAG] = true
-	elseif trigger == Service.Start then
-		if not service[IS_INITIALIZED_TAG] then
-			Log.Warn("failed to start service: not initialized")
-			return
-		end
-
+	if trigger == Service.Start then
 		if service[IS_STARTED_TAG] then
 			Log.Warn("failed to start service: already started")
 			return
@@ -79,14 +65,6 @@ function Service.IsStarted(service: Table): boolean
 	end
 
 	return service[IS_STARTED_TAG]
-end
-
-function Service.IsInitialized(service: Table): boolean
-	if not Service.IsService(service) then
-		return false
-	end
-
-	return service[IS_INITIALIZED_TAG]
 end
 
 function Service.IsService(table: Table): boolean
