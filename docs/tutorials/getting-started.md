@@ -71,15 +71,11 @@ To add the service lifecycle, we are going to use Loom functions that act as ann
 === "Luau"
 
     ```luau
-    Loom.On(PlayerLogService, Loom.Init, function()
-        print("PlayerLogService has initialized!")
-    end)
-
-    Loom.On(PlayerLogService, Loom.Start, function()
+    Loom.OnStart(PlayerLogService, function()
         print("PlayerLogService has started!")
     end)
 
-    Loom.On(PlayerLogService, Loom.Stop, function()
+    Loom.OnStop(PlayerLogService, function()
         print("PlayerLogService has stopped!")
     end)
     ```
@@ -98,18 +94,14 @@ Now, let's conenct our functions to our events, and make sure that we don't forg
 
     -- ...
 
-    Loom.On(PlayerLogService, Loom.Init, function()
-        print("PlayerLogService has initialized!")
-    end)
-
-    Loom.On(PlayerLogService, Loom.Start, function()
+    Loom.OnStart(PlayerLogService, function()
         PlayerLogService.PlayerAdded = Players.PlayerAdded:Connect(PlayerLogService.LogPlayerAdded)
         PlayerLogService.PlayerRemoving = Players.PlayerRemoving:Connect(PlayerLogService.LogPlayerRemoving)
 
         print("PlayerLogService has started!")
     end)
 
-    Loom.On(PlayerLogService, Loom.Stop, function()
+    Loom.OnStop(PlayerLogService, function()
         if PlayerLogService.PlayerAdded then
             PlayerLogService.PlayerAdded:Disconnect()
         end
