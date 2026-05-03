@@ -7,8 +7,13 @@ local isRunning = false
 
 local Loom = {}
 
+--- `Loom.Init` trigger is going to be removed in version 1.2 and upwards.
 Loom.Init = Service.Init
+
+--- `Loom.Start` is going to be removed alongside `Loom.On()` in version 1.2 and upwards. Use `Loom.OnStart()` instead
 Loom.Start = Service.Start
+
+--- `Loom.Stop` is going to be removed alongside `Loom.On()` in version 1.2 and upwards. Use `Loom.OnStop()` instead
 Loom.Stop = Service.Stop
 
 function Loom.CreateService(table: any)
@@ -28,13 +33,32 @@ function Loom.IsServiceStarted(service: any)
 	return Service.IsStarted(service)
 end
 
-function Loom.On(table: any, trigger: Service.Trigger, func: Service.EventHandler)
+local function connectLifecycleTrigger(table: any, trigger: Service.Trigger, func: Service.EventHandler)
 	if isRunning then
 		Log.Warn("failed to add service event: loom is already running")
 		return
 	end
 
 	Service.On(table, trigger, func)
+end
+
+--- Use a designated function for each trigger:
+---
+--- - `Loom.OnStart()`
+--- - `Loom.OnStop()`
+---
+--- `Loom.Init` is deprecated and can no longer be used in version 1.2 and upwards.
+@deprecated
+function Loom.On(table: any, trigger: Service.Trigger, func: Service.EventHandler)
+	connectLifecycleTrigger(table, trigger, func)
+end
+
+function Loom.OnStart(table: any, func: Service.EventHandler)
+	connectLifecycleTrigger(table, Service.Start, func)
+end
+
+function Loom.OnStop(table: any, func: Service.EventHandler)
+	connectLifecycleTrigger(table, Service.Start, func)
 end
 
 function Loom.AddSource(source: Instance)
