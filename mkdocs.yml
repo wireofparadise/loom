@@ -27,7 +27,7 @@ nav:
   - Tutorials:
     - Installation: tutorials/installation.md
     - Getting started: tutorials/getting-started.md
-  - API reference:
+  - API Reference:
     - Loom: api-reference/loom.md
 
 extra:
@@ -40,6 +40,7 @@ markdown_extensions:
   - pymdownx.snippets
   - pymdownx.details
   - pymdownx.superfences
+  - pymdownx.tilde
   - pymdownx.tabbed:
       alternate_style: true
   - toc:

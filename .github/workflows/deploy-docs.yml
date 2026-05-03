@@ -3,7 +3,7 @@ name: Deploy documentation to GitHub Pages
 on:
   push:
     tags:
-      - 'v*.*.0'
+      - 'v*.*.*'
 
 permissions:
   contents: write
@@ -34,6 +34,6 @@ jobs:
       - name: Deploy with mike
         run: |
           VERSION=${GITHUB_REF_NAME#v}
-          VERSION=${VERSION%.0}
-          mike deploy --push --update-aliases "$VERSION" latest
+          VERSION=${VERSION%.*}
+          mike deploy --push --update-aliases --title "$VERSION.x" "$VERSION" latest
           mike set-default --push latest
