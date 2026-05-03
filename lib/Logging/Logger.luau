@@ -45,7 +45,7 @@ local function log(self: LoggingTypes.Logger, message: string, level: number)
 	end
 
 	local formattedMessage = if self._scope
-		then string.format("%s [%s]: %s", self._scope, getLogLevelName(level), message)
+		then string.format("[%s] [%s]: %s", getLogLevelName(level), self._scope, message)
 		else string.format("[%s]: %s", getLogLevelName(level), message)
 
 	getLogFunction(level)(formattedMessage)
