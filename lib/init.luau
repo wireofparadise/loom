@@ -4,7 +4,7 @@ local LogLevels = require(script.Logging.LogLevels)
 local Logger = require(script.Logging.Logger)
 local LoggingTypes = require(script.Logging.LoggingTypes)
 
-local logger: LoggingTypes.Logger? = nil
+local logger = (Logger.new() :: any) :: Logger
 local components: { ComponentLifecycle.Component } = {}
 local isStarted = false
 
@@ -67,37 +67,15 @@ export type Logger = LoggingTypes.Logger
 export type LoggerOptions = LoggingTypes.LoggerOptions
 
 function Loom.ConfigureLogger(options: LoggerOptions?)
-	logger = Logger.new(options)
+	logger = Logger.new(options) :: any
 end
 
-function Loom.Logger(name: string)
-	assert(logger ~= nil, "logger has not been configured, did you forget 'Loom.ConfigureLogger'?")
-	return logger:Scope(name)
-end
-
-function Loom.Fatal(fmt: string, ...)
-	assert(logger ~= nil, "logger has not been configured, did you forget 'Loom.ConfigureLogger'?")
-	logger:Fatal(fmt, ...)
-end
-
-function Loom.Error(fmt: string, ...)
-	assert(logger ~= nil, "logger has not been configured, did you forget 'Loom.ConfigureLogger'?")
-	logger:Error(fmt, ...)
-end
-
-function Loom.Warn(fmt: string, ...)
-	assert(logger ~= nil, "logger has not been configured, did you forget 'Loom.ConfigureLogger'?")
-	logger:Warn(fmt, ...)
-end
-
-function Loom.Info(fmt: string, ...)
-	assert(logger ~= nil, "logger has not been configured, did you forget 'Loom.ConfigureLogger'?")
-	logger:Info(fmt, ...)
-end
-
-function Loom.Debug(fmt: string, ...)
-	assert(logger ~= nil, "logger has not been configured, did you forget 'Loom.ConfigureLogger'?")
-	logger:Debug(fmt, ...)
+function Loom.UseLogger(name: string?): Logger
+	if name == nil then
+		return logger
+	else
+		return logger:Scope(name)
+	end
 end
 
 return Loom
